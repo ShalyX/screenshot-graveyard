@@ -161,8 +161,10 @@ def health():
 def selftest():
     try:
         schema={"type":"object","additionalProperties":False,"required":["ok","word"],"properties":{"ok":{"type":"boolean"},"word":{"type":"string"}}}
+        probe=base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl+XHkAAAAASUVORK5CYII=")
+        ocr_text(probe)
         result=hf_chat([{"role":"user","content":"Return JSON with ok=true and word=graveyard."}],schema,"deployment_selftest",40)
-        return jsonify(result)
+        return jsonify(result, ocrInitialized=(OCR is not None))
     except Exception as e:
         return jsonify(error=str(e)),503
 
