@@ -81,8 +81,12 @@ async function prepare(file){
  const im=await loadImage(file),max=1800,scale=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*scale);c.height=Math.round(im.height*scale);c.getContext("2d").drawImage(im,0,0,c.width,c.height);
  const data=c.toDataURL("image/jpeg",.9);return data
 }
+function fileData(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej(r.error);r.readAsDataURL(file)})}
 async function analyze(file){
- const image=await prepare(file);const r=await fetch("/api/analyze",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({image,filename:file.name})});const d=await r.json();if(!r.ok)throw Error(d.error||"Could not recover screenshot");return {id:id(),filename:file.name,createdAt:new Date().toISOString(),imageData:image,...d.memory}
+ const [image,original]=await Promise.all([prepare(file),fileData(file)]);
+ const r=await fetch("/api/analyze",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({image,filename:file.name})});
+ const d=await r.json();if(!r.ok)throw Error(d.error||"Could not recover screenshot");
+ return {id:id(),filename:file.name,createdAt:new Date().toISOString(),imageData:original,...d.memory}
 }
 function card(m,reason=""){return `<button class="card" data-id="${esc(m.id)}"><img class="thumb" src="${m.imageData}" alt=""><div class="meta"><strong>${esc(m.title)}</strong><p>${esc(m.summary)}</p>${reason?`<p class="reason">↳ ${esc(reason)}</p>`:""}</div></button>`}
 function render(){
