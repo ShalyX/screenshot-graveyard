@@ -107,8 +107,16 @@ async function process(list){
 }
 async function search(q){
  $("result").classList.remove("hidden");$("result").innerHTML='<div class="answer">Digging through what you saved…</div>';
- const compact=memories.map(({imageData,...m})=>m);try{const r=await fetch("/api/search",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({query:q,memories:compact})});const d=await r.json();if(!r.ok)throw Error(d.error||"Search failed");const matches=(d.matches||[]).map(x=>({x,m:memories.find(m=>m.id===x.id)})).filter(x=>x.m);$("result").innerHTML=`<div class="answer">${esc(d.answer||"I think this is it.")}</div>${matches.length?`<div class="grid">${matches.map(({x,m})=>card(m,x.reason)).join("")}</div>`:""}`}
- }catch(e){$("result").innerHTML=`<div class="answer">${esc(e.message)}</div>`}
+ const compact=memories.map(({imageData,...m})=>m);
+ try{
+  const r=await fetch("/api/search",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({query:q,memories:compact})});
+  const d=await r.json();
+  if(!r.ok)throw Error(d.error||"Search failed");
+  const matches=(d.matches||[]).map(x=>({x,m:memories.find(m=>m.id===x.id)})).filter(x=>x.m);
+  $("result").innerHTML=`<div class="answer">${esc(d.answer||"I think this is it.")}</div>${matches.length?`<div class="grid">${matches.map(({x,m})=>card(m,x.reason)).join("")}</div>`:""}`;
+ }catch(e){
+  $("result").innerHTML=`<div class="answer">${esc(e.message)}</div>`;
+ }
 }
 function open(m){$("modal").innerHTML=`<div class="modal"><img src="${m.imageData}" alt=""><div class="modal-copy"><div class="eyebrow">${esc(cats[m.category]||"Recovered")}</div><h2>${esc(m.title)}</h2><p>${esc(m.summary)}</p><p class="why">${esc(m.whySaved)}</p><p>Original file · ${esc(m.filename)}</p></div></div>`;$("dialog").showModal()}
 $("drop").addEventListener("dragover",e=>{e.preventDefault();$("drop").classList.add("drag")});$("drop").addEventListener("dragleave",()=>$("drop").classList.remove("drag"));$("drop").addEventListener("drop",e=>{e.preventDefault();$("drop").classList.remove("drag");process(e.dataTransfer.files)});
