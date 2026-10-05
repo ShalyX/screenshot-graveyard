@@ -19,7 +19,7 @@ Screenshot Graveyard turns forgotten screenshots into a searchable memory archiv
 - Google Gemma 3 4B via Hugging Face Inference Providers
 - Vanilla HTML/CSS/JS
 - IndexedDB for the screenshot archive
-- Render deployment blueprint
+- Vercel production deployment
 
 ## Privacy
 
@@ -53,8 +53,7 @@ See `.env.example`.
 
 Built for the “Build for a Friend” weekend challenge.
 
-Target categories:
+Target category:
 - Best Use of Gemma
-- Best Use of Render
 
-See `JUDGE_NOTES.md` for a concise technical walkthrough and `SUBMISSION_DRAFT.md` for the DEV submission draft.
+Live app: https://screenshot-graveyard.vercel.app\n\nSee `JUDGE_NOTES.md` for a concise technical walkthrough.
