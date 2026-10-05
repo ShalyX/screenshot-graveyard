@@ -20,6 +20,6 @@ Suggested query:
 - **Graceful failure:** one malformed model response or failed screenshot does not strand the entire batch.
 - **Multimodal fallback:** text-heavy screenshots use OCR + text reasoning; text-light screenshots can fall back to Gemma vision.
 
-## Privacy note
+## Live deployment\n\nhttps://screenshot-graveyard.vercel.app\n\nHosted on Vercel; Gemma inference runs through Hugging Face Inference Providers.\n\n## Privacy note
 
 This hosted submission is not fully on-device. Screenshot content or OCR text is sent to Hugging Face Inference Providers for Gemma analysis. Screenshot Graveyard itself does not maintain a server-side screenshot archive.
