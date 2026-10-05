@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Screenshot Graveyard — dig up what you saved</title>
+<meta name="description" content="Turn forgotten screenshots into a searchable memory archive with OCR + Gemma 3.">
+<style>
+:root{--bg:#090908;--panel:#10100f;--line:#262620;--text:#f1f0e8;--muted:#969589;--acid:#d9ff72;--soft:#171715}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+button,input{font:inherit}.shell{max-width:1180px;margin:auto;padding:24px 28px 72px}.top{display:flex;justify-content:space-between;align-items:center;padding:4px 0 44px}
+.brand{font-weight:700;letter-spacing:-.02em}.status{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:13px}.dot{width:7px;height:7px;border-radius:50%;background:#777}.dot.ok{background:var(--acid);box-shadow:0 0 18px #d9ff7277}
+.hero{padding:4vh 0 20px}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--acid);margin-bottom:18px}
+h1{font-size:clamp(44px,7.5vw,92px);line-height:.94;letter-spacing:-.065em;max-width:900px;margin:0 0 24px}
+.lede{color:var(--muted);font-size:18px;max-width:570px;margin:0 0 34px}.drop{border:1px dashed #46463d;border-radius:18px;min-height:210px;display:grid;place-items:center;text-align:center;background:linear-gradient(180deg,#10100f,#0c0c0b);cursor:pointer;transition:.2s}
+.drop:hover,.drop.drag{border-color:var(--acid);transform:translateY(-1px)}.drop strong{display:block;font-size:18px;margin-bottom:8px}.drop span{color:var(--muted)}
+input[type=file]{display:none}.pipeline{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;color:#77766d;font-size:12px}.pipeline span{border:1px solid var(--line);padding:7px 10px;border-radius:999px}
+.processing{margin:34px 0;border-top:1px solid var(--line);padding-top:24px}.processing h2,.archive-head h2{font-size:26px;letter-spacing:-.03em;margin:0}.proc-row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid #1d1d19;color:var(--muted)}.proc-row.good{color:#d7ef9b}.proc-row.bad{color:#e5a6a0}
+.archive{margin-top:42px}.archive-head{display:flex;justify-content:space-between;gap:18px;align-items:end;margin-bottom:24px}.count{color:var(--muted)}
+.search{display:grid;grid-template-columns:1fr auto;gap:10px;margin:0 0 32px}.search input{width:100%;background:var(--panel);border:1px solid var(--line);color:var(--text);padding:15px 16px;border-radius:12px;outline:none}.search input:focus{border-color:#55564a}.search button,.add{background:var(--acid);color:#10100c;border:0;border-radius:12px;padding:0 18px;font-weight:700;cursor:pointer}
+.add{padding:10px 14px}.result{border:1px solid #31312b;background:#11110f;border-radius:16px;padding:18px;margin:-16px 0 30px}.answer{font-size:18px;margin-bottom:14px}
+.group{margin:32px 0}.group-title{display:flex;gap:9px;align-items:center;margin-bottom:13px}.group-title h3{font-size:15px;margin:0}.badge{color:var(--muted);font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:14px}.card{padding:0;border:1px solid var(--line);background:var(--panel);border-radius:15px;overflow:hidden;color:inherit;text-align:left;cursor:pointer}.card:hover{border-color:#4b4b42}
+.thumb{width:100%;aspect-ratio:4/3;object-fit:cover;background:#181816}.meta{padding:14px}.meta strong{display:block;line-height:1.25;margin-bottom:7px}.meta p{margin:0;color:var(--muted);font-size:13px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.reason{color:#c9d4a4!important;margin-top:8px!important}
+.empty{color:var(--muted);padding:26px 0}.hidden{display:none!important}
+dialog{background:#11110f;color:var(--text);border:1px solid #35352f;border-radius:18px;max-width:920px;width:min(92vw,920px);padding:0}dialog::backdrop{background:#000a}.modal{display:grid;grid-template-columns:1.1fr 1fr}.modal img{width:100%;height:100%;max-height:70vh;object-fit:contain;background:#050505}.modal-copy{padding:30px}.modal-copy h2{font-size:30px;line-height:1;margin:10px 0 14px;letter-spacing:-.04em}.modal-copy p{color:var(--muted)}.why{color:#d7dfbb!important}.close{position:absolute;right:13px;top:12px;border:1px solid #3a3a34;background:#161614;color:white;width:34px;height:34px;border-radius:50%;cursor:pointer}
+.foot{border-top:1px solid var(--line);margin-top:60px;padding-top:20px;color:#6e6d65;font-size:12px}
+@media(max-width:700px){.shell{padding:18px 18px 50px}.top{padding-bottom:25px}.archive-head{align-items:center}.modal{grid-template-columns:1fr}.modal img{max-height:46vh}.search{grid-template-columns:1fr}.search button{padding:13px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="top"><div class="brand">Screenshot Graveyard</div><div class="status"><span id="dot" class="dot"></span><span id="status">Checking Gemma…</span></div></header>
+
+<section id="hero" class="hero">
+<div class="eyebrow">A memory for your screenshots</div>
+<h1>Your camera roll remembers everything. You remember none of it.</h1>
+<p class="lede">Drop the screenshots you swore you'd come back to. Screenshot Graveyard reads them, remembers why they mattered, and lets you find them later in plain English.</p>
+<label id="drop" class="drop">
+<input id="files" type="file" accept="image/*" multiple>
+<div><strong>Drop screenshots here</strong><span>or click to choose a few</span></div>
+</label>
+<div class="pipeline"><span>Literal text → RapidOCR</span><span>Meaning → Gemma 3</span><span>Archive → your browser</span></div>
+</section>
+
+<section id="processing" class="processing hidden">
+<div class="archive-head"><div><div class="eyebrow">Excavation in progress</div><h2>Digging through your screenshots…</h2></div><div id="progress" class="count">0 / 0</div></div>
+<div id="rows"></div>
+</section>
+
+<section id="archive" class="archive hidden">
+<div class="archive-head"><div><div class="eyebrow">Recovered memory</div><h2><span id="count">0</span> <span id="noun">screenshots understood</span></h2></div><button id="add" class="add">+ Add more</button></div>
+<form id="search" class="search"><input id="query" placeholder="Dig something up… “that private access thing”"><button>Search</button></form>
+<div id="result" class="result hidden"></div>
+<div id="groups"></div>
+</section>
+
+<div class="foot">Screenshot Graveyard · Gemma 3 + RapidOCR · originals and recovered memories stay in your browser archive.</div>
+</div>
+
+<dialog id="dialog"><button id="close" class="close">×</button><div id="modal"></div></dialog>
+
+<script>
+const cats={places:"Places to try",things:"Things I wanted",ideas:"Ideas & inspiration","read-later":"Read later",useful:"Useful stuff",mystery:"What possessed you to save this?"};
+let memories=[], ready=false;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const id=()=>crypto.randomUUID?.()||Date.now().toString(36)+Math.random().toString(36).slice(2);
+
+function db(){
+ return new Promise((resolve,reject)=>{const r=indexedDB.open("screenshot-graveyard",1);r.onupgradeneeded=()=>r.result.createObjectStore("memories",{keyPath:"id"});r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})
+}
+async function all(){const d=await db();return new Promise((res,rej)=>{const r=d.transaction("memories").objectStore("memories").getAll();r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+async function put(x){const d=await db();return new Promise((res,rej)=>{const r=d.transaction("memories","readwrite").objectStore("memories").put(x);r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})}
+
+async function health(){
+ try{const d=await fetch("/api/health").then(r=>r.json());ready=!!d.modelReady;$("dot").className="dot "+(ready?"ok":"");$("status").textContent=ready?"Gemma 3 + OCR ready":"Inference not configured"}catch{$("status").textContent="Service unavailable"}
+}
+function loadImage(file){return new Promise((res,rej)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{URL.revokeObjectURL(u);res(im)};im.onerror=rej;im.src=u})}
+async function prepare(file){
+ const im=await loadImage(file),max=1800,scale=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*scale);c.height=Math.round(im.height*scale);c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+ const data=c.toDataURL("image/jpeg",.9);return data
+}
+async function analyze(file){
+ const image=await prepare(file);const r=await fetch("/api/analyze",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({image,filename:file.name})});const d=await r.json();if(!r.ok)throw Error(d.error||"Could not recover screenshot");return {id:id(),filename:file.name,createdAt:new Date().toISOString(),imageData:image,...d.memory}
+}
+function card(m,reason=""){return `<button class="card" data-id="${esc(m.id)}"><img class="thumb" src="${m.imageData}" alt=""><div class="meta"><strong>${esc(m.title)}</strong><p>${esc(m.summary)}</p>${reason?`<p class="reason">↳ ${esc(reason)}</p>`:""}</div></button>`}
+function render(){
+ $("count").textContent=memories.length;$("noun").textContent=memories.length===1?"screenshot understood":"screenshots understood";$("hero").classList.toggle("hidden",memories.length>0);$("archive").classList.toggle("hidden",memories.length===0);
+ const g={};for(const m of memories)(g[m.category]??=[]).push(m);
+ $("groups").innerHTML=Object.entries(g).map(([k,v])=>`<section class="group"><div class="group-title"><h3>${cats[k]||"Recovered"}</h3><span class="badge">${v.length}</span></div><div class="grid">${v.map(x=>card(x)).join("")}</div></section>`).join("")
+}
+async function process(list){
+ if(!ready){$("status").textContent="Add HF_TOKEN to the deployment first";return}
+ const files=[...list].filter(f=>f.type.startsWith("image/"));if(!files.length)return;
+ $("processing").classList.remove("hidden");$("rows").innerHTML="";let done=0,fail=0;$("progress").textContent=`0 / ${files.length}`;
+ for(const f of files){const row=document.createElement("div");row.className="proc-row";row.innerHTML=`<span>Reading · ${esc(f.name)}</span><span>OCR + memory</span>`;$("rows").append(row);
+  try{const m=await analyze(f);await put(m);memories.unshift(m);row.classList.add("good");row.innerHTML=`<span>Recovered · ${esc(m.title)}</span><span>✓</span>`;render()}
+  catch(e){fail++;row.classList.add("bad");row.innerHTML=`<span>Couldn’t recover · ${esc(f.name)}</span><span>${esc(e.message)}</span>`}
+  done++;$("progress").textContent=`${done} / ${files.length}`;
+ }
+ setTimeout(()=>$("processing").classList.add("hidden"),1200)
+}
+async function search(q){
+ $("result").classList.remove("hidden");$("result").innerHTML='<div class="answer">Digging through what you saved…</div>';
+ const compact=memories.map(({imageData,...m})=>m);try{const r=await fetch("/api/search",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({query:q,memories:compact})});const d=await r.json();if(!r.ok)throw Error(d.error||"Search failed");const matches=(d.matches||[]).map(x=>({x,m:memories.find(m=>m.id===x.id)})).filter(x=>x.m);$("result").innerHTML=`<div class="answer">${esc(d.answer||"I think this is it.")}</div>${matches.length?`<div class="grid">${matches.map(({x,m})=>card(m,x.reason)).join("")}</div>`:""}`}
+ }catch(e){$("result").innerHTML=`<div class="answer">${esc(e.message)}</div>`}
+}
+function open(m){$("modal").innerHTML=`<div class="modal"><img src="${m.imageData}" alt=""><div class="modal-copy"><div class="eyebrow">${esc(cats[m.category]||"Recovered")}</div><h2>${esc(m.title)}</h2><p>${esc(m.summary)}</p><p class="why">${esc(m.whySaved)}</p><p>Original file · ${esc(m.filename)}</p></div></div>`;$("dialog").showModal()}
+$("drop").addEventListener("dragover",e=>{e.preventDefault();$("drop").classList.add("drag")});$("drop").addEventListener("dragleave",()=>$("drop").classList.remove("drag"));$("drop").addEventListener("drop",e=>{e.preventDefault();$("drop").classList.remove("drag");process(e.dataTransfer.files)});
+$("files").addEventListener("change",e=>process(e.target.files));$("add").onclick=()=>$("files").click();$("search").onsubmit=e=>{e.preventDefault();const q=$("query").value.trim();if(q)search(q)};
+document.addEventListener("click",e=>{const c=e.target.closest("[data-id]");if(c){const m=memories.find(x=>x.id===c.dataset.id);if(m)open(m)}});$("close").onclick=()=>$("dialog").close();$("dialog").onclick=e=>{if(e.target===$("dialog"))$("dialog").close()};
+(async()=>{await health();memories=(await all()).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));render()})()
+</script>
+</body>
+</html>
