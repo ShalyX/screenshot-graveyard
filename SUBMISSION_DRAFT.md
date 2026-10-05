@@ -1,3 +1,10 @@
+---
+title: "Screenshot Graveyard: I built my friend a memory for the screenshots they never revisit"
+published: false
+description: "A searchable memory layer for forgotten screenshots, built with RapidOCR and Gemma 3."
+tags: devchallenge, weekendchallenge, hf26challenge, gemma
+---
+
 # Screenshot Graveyard: I built my friend a memory for the screenshots they never revisit
 
 Hacktoberfest Weekend Challenge: Build for a Friend Submission 🤝
@@ -12,7 +19,7 @@ A restaurant they want to try. A product they might buy. A tweet worth rereading
 
 At the moment they save it, the screenshot feels useful.
 
-A week later, it is just image number 6,842 in the camera roll.
+A week later, it is just one more image buried in the camera roll.
 
 That was the problem I wanted to solve this weekend.
 
